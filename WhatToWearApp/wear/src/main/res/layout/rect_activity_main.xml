@@ -1,15 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.karimoore.android.whattowearapp.MainActivity"
     tools:deviceIds="wear_square">
 
-    <TextView
-        android:id="@+id/text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/hello_square" />
+    <android.support.wearable.view.BoxInsetLayout
+        android:background="@drawable/card_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.wearable.view.CardScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_box="bottom"
+            android:background="#5b66b2">
+
+            <android.support.wearable.view.CardFrame
+                android:id="@+id/cf_whattowear"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="31dp"
+                        android:layout_alignParentTop="true"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:text="Medium Text"
+                        android:id="@+id/textView" />
+
+                    <TextView
+                        android:id="@+id/tv_temperature"
+                        android:fontFamily="sans-serif-light"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tv_temperature"
+                        />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:text="@string/tv_kari_description"
+                        android:id="@+id/tv_kari_text" />
+                </RelativeLayout>
+            </android.support.wearable.view.CardFrame>
+        </android.support.wearable.view.CardScrollView>
+
+    </android.support.wearable.view.BoxInsetLayout>
+
 </LinearLayout>
