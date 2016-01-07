@@ -22,9 +22,35 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Longitude"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/tv_latitude"
         android:layout_toEndOf="@+id/tv_latitude"
-        android:layout_marginLeft="52dp"
-        android:layout_marginStart="52dp" />
+        android:layout_below="@+id/tv_latitude"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/iv_weather_image"
+        android:layout_below="@+id/tv_longitude"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="90dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Medium Text"
+        android:id="@+id/tv_temperature"
+        android:layout_below="@+id/iv_weather_image"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="64dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Small Text"
+        android:id="@+id/tv_condition"
+        android:layout_below="@+id/tv_temperature"
+        android:layout_centerHorizontal="true" />
 </RelativeLayout>

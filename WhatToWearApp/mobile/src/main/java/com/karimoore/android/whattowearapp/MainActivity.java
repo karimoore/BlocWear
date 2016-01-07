@@ -1,7 +1,6 @@
 package com.karimoore.android.whattowearapp;
 
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -10,25 +9,38 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.karimoore.android.whattowearapp.model.data.WeatherData;
+import com.karimoore.android.whattowearapp.model.network.WeatherNetwork;
+import com.karimoore.android.whattowearapp.model.network.WeatherNetworkListener;
 
-public class MainActivity extends AppCompatActivity implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+import org.json.JSONObject;
 
-    /**
-     * ATTENTION: This "addApi(AppIndex.API)" was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
+public class MainActivity extends AppCompatActivity {
+
+
+    private static final String TAG = "kariPhoneMainActivity";
     private GoogleApiClient mGoogleApiClient;
+    private WeatherNetwork mWeatherNetwork;
     private Location mLastLocation;
     private TextView mLatitudeText;
     private TextView mLongitudeText;
+
+    private TextView temperature;
+    private TextView condition;
+    private ImageView weatherIcon;
+
+
+    private String mLongitude;
+    private String mLatitude;
+
+    WeatherData weatherData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,24 +48,21 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        mLatitudeText = (TextView) findViewById(R.id.tv_latitude);
-        mLongitudeText = (TextView) findViewById(R.id.tv_longitude);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Kari, Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
+                // Go get the weather from OpenWeatherApi
+                //getWeatherFromWeb(mLongitude, mLatitude);
 
 
             }
         });
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API).build();
-                //.addApi(AppIndex.API).build();
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,54 +89,17 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     @Override
     public void onStart() {
         super.onStart();
-        mGoogleApiClient.connect();
+    }
 
- /*       // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        mGoogleApiClient.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.karimoore.android.whattowearapp/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(mGoogleApiClient, viewAction);
- */   }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-  /*      // ATTENTION: This was auto-generated to implement the App Indexing API.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app deep link URI is correct.
-                Uri.parse("android-app://com.karimoore.android.whattowearapp/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(mGoogleApiClient, viewAction);*/
-        mGoogleApiClient.disconnect();
     }
+}
 
-    @Override
-    public void onConnected(Bundle bundle) {
-        Toast.makeText(MainActivity.this, "We have connected", Toast.LENGTH_SHORT).show();
-        mLastLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (mLastLocation != null){
-            mLongitudeText.setText(String.valueOf(mLastLocation.getLongitude()));
-            mLatitudeText.setText(String.valueOf(mLastLocation.getLatitude()));
-        }
-    }
-
+/*
 
     @Override
     public void onConnectionSuspended(int i) {
@@ -138,4 +110,24 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
     public void onConnectionFailed(ConnectionResult connectionResult) {
         Toast.makeText(MainActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
     }
+
+    // WeatherNetworkListener---------------------
+    @Override
+    public void networkSuccess(WeatherData wData) {
+        weatherData = wData;  // this is current weather at start of app
+        // update the screen
+        condition.setText(wData.getDescription());
+        temperature.setText(wData.getTemperature());
+
+        // if sending a bitmap use the asset class
+        //Asset asset - createAssetFromBitmap(bitmap); 100 kByte
+    }
+
+    @Override
+    public void networkFailure(Exception e) {
+        //post error
+
+    }
+    // WeatherNetworkListener ----------------------------
 }
+*/

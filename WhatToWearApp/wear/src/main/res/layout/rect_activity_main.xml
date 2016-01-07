@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_box="bottom"
-            android:background="#5b66b2">
+            android:background="@color/red">
 
             <android.support.wearable.view.CardFrame
                 android:id="@+id/cf_whattowear"
@@ -30,6 +30,11 @@
                     android:orientation="vertical"
                     android:paddingLeft="5dp">
 
+                    <ProgressBar
+                        android:id="@+id/pb_wait_for_weather_rect"
+                        android:visibility="invisible"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="31dp"
