@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.karimoore.android.whattowearapp.R;
+import com.karimoore.android.whattowearapp.model.data.ForecastData;
 import com.karimoore.android.whattowearapp.model.data.WeatherData;
 
 import org.json.JSONObject;
@@ -20,17 +21,20 @@ import java.net.URLConnection;
 /**
  * Created by kari on 12/15/15.
  */
-public class WeatherNetwork extends Activity {  // make it an activity to give it start/stop
+public class WeatherNetwork {
 
     private static final String TAG = "kariPhoneWeatherNetwork";
     private WeatherNetworkListener listener;
     private Exception error;
 
     private static final String WEATHER_API = "http://api.openweathermap.org/data/2.5/weather?";
+    private static final String FORECAST_API = "http://api.openweathermap.org/data/2.5/forecast/daily?";
     private static final String LAT = "lat";
     private static final String LON = "lon";
     private static final String UNITS = "units";
-    private static final String UNIT_TYPE = "imperial";  // this is variable TO DO:
+    private static final String UNIT_TYPE = "imperial";
+    private static final String COUNT = "cnt";
+    private static final String NUM_DAYS = "5";
     private static final String WEATHER_API_KEY= "appid=27102c50da8d94840c144bb2fe0831bc";
 
 
@@ -44,13 +48,14 @@ public class WeatherNetwork extends Activity {  // make it an activity to give i
 
     public void refreshWeather(final Location location) {
 
-        new AsyncTask<Location, Void, WeatherData>() {
+//        new AsyncTask<Location, Void, WeatherData>() {
+        new AsyncTask<Location, Void, ForecastData>() {
             @Override
-            protected WeatherData doInBackground(Location[] locations) {
+            protected ForecastData doInBackground(Location[] locations) {
 
 
 //                String urlWeather = "http://api.openweathermap.org/data/2.5/weather?lat=42&lon=-88&units=imperial&appid=27102c50da8d94840c144bb2fe0831bc";
-                StringBuilder sBuilder = new StringBuilder(WEATHER_API);
+                StringBuilder sBuilder = new StringBuilder(FORECAST_API);
                 sBuilder.append(LAT+"=");
 
                 long roundLat = Math.round(location.getLatitude());
@@ -59,6 +64,7 @@ public class WeatherNetwork extends Activity {  // make it an activity to give i
                 long roundLon = Math.round(location.getLongitude());
                 sBuilder.append(String.valueOf(roundLon));
                 sBuilder.append("&"+UNITS+"="+UNIT_TYPE);
+                sBuilder.append("&"+COUNT+"="+NUM_DAYS);
                 sBuilder.append("&"+WEATHER_API_KEY);
                 try {
                     URL url = new URL(sBuilder.toString());
@@ -75,9 +81,9 @@ public class WeatherNetwork extends Activity {  // make it an activity to give i
                         result.append(line);
                     }
 
-                    WeatherData networkWeatherData = new WeatherData();
-                    networkWeatherData.populate(new JSONObject(result.toString()));
-                    return networkWeatherData;
+                    ForecastData networkForecastData = new ForecastData();
+                    networkForecastData.populate(new JSONObject(result.toString()));
+                    return networkForecastData;
 
                 } catch (Exception e) {
                     error = e;
@@ -86,16 +92,17 @@ public class WeatherNetwork extends Activity {  // make it an activity to give i
             }
 
             @Override
-            protected void onPostExecute(WeatherData weatherData) {
+//            protected void onPostExecute(WeatherData weatherData) {
+            protected void onPostExecute(ForecastData forecastData) {
 
                 // send back data to activity
-                Log.d(TAG, "Here is the WeatherData(temp/description: " + weatherData.getTemperature()
-                                                            + "/" + weatherData.getDescription());
+//                Log.d(TAG, "Here is the WeatherData(temp/description: " + weatherData.getTemperature()
+//                                                            + "/" + weatherData.getDescription());
 
-                if (weatherData == null && error != null) {
+                if (forecastData == null && error != null) {
                     listener.networkFailure(error);
                 } else {
-                    listener.networkSuccess(weatherData);
+                    listener.networkSuccess(forecastData);
                 }
 
 

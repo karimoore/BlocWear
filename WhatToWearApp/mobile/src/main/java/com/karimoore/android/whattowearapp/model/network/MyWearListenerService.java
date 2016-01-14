@@ -21,6 +21,7 @@ import com.google.android.gms.wearable.Wearable;
 import com.google.android.gms.wearable.WearableListenerService;
 import com.karimoore.android.whattowearapp.MainActivity;
 import com.karimoore.android.whattowearapp.R;
+import com.karimoore.android.whattowearapp.model.data.ForecastData;
 import com.karimoore.android.whattowearapp.model.data.WeatherData;
 import com.karimoore.android.whattowearapp.model.network.WeatherNetwork;
 import com.karimoore.android.whattowearapp.model.network.WeatherNetworkListener;
@@ -64,7 +65,6 @@ public class MyWearListenerService extends WearableListenerService implements We
         messageEvent.getData();
         nodeId = messageEvent.getSourceNodeId(); // in case we need to hang on to this connected wearable/watch
         String path = messageEvent.getPath();
-        Toast.makeText(getApplicationContext(), "Received:  " + path, Toast.LENGTH_SHORT).show();
         Log.d(TAG, "Received the message from node: "
                 + path + " " + nodeId);
 
@@ -78,6 +78,7 @@ public class MyWearListenerService extends WearableListenerService implements We
     }
 
 
+/*
     @Override
     public void networkSuccess(final WeatherData wData) {
         PutDataMapRequest mapRequest = PutDataMapRequest.create("/WEATHER_DATA");
@@ -107,11 +108,37 @@ public class MyWearListenerService extends WearableListenerService implements We
                     }
                 });
     }
+*/
 
     private Asset createAssetFromBitmap(Bitmap bitmap) {
         final ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 100, byteStream);
         return Asset.createFromBytes(byteStream.toByteArray());
+
+    }
+
+    @Override
+    public void networkSuccess(final ForecastData fData) {
+        PutDataMapRequest mapRequest = PutDataMapRequest.create("/FORECAST_DATA");
+        mapRequest.getDataMap().putDataMapArrayList("wearWeatherList", ForecastData.toDataMap(fData));
+        PutDataRequest request = mapRequest.asPutDataRequest();
+        request.setUrgent();
+        // send data over
+        Wearable.DataApi.putDataItem(mGoogleClient, request)
+                .setResultCallback(new ResultCallback<DataApi.DataItemResult>() {
+                    @Override
+                    public void onResult(DataApi.DataItemResult dataItemResult) {
+                        if (!dataItemResult.getStatus().isSuccess()) {
+                            Log.d(TAG, "Failed to send updated weather data item " + fData.getForecast().get(0).getTemperature());
+
+                        } else {
+                            Log.d(TAG, "Successfully sent updated weather data item " + fData.getForecast().get(0).getTemperature());
+                            Toast.makeText(getApplicationContext(), "Sending temperature:  " + fData.getForecast().get(0).getTemperature(), Toast.LENGTH_SHORT).show();
+
+                        }
+
+                    }
+                });
 
     }
 

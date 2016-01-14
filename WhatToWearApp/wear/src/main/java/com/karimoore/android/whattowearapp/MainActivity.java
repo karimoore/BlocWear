@@ -4,11 +4,17 @@ import android.app.Activity;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.wearable.view.CardFragment;
+import android.support.wearable.view.DotsPageIndicator;
+import android.support.wearable.view.GridViewPager;
 import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnApplyWindowInsetsListener;
+import android.view.WindowInsets;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +35,11 @@ import com.google.android.gms.wearable.MessageApi;
 import com.google.android.gms.wearable.Node;
 import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
+import com.karimoore.android.common.Weather;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -67,27 +75,34 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     private CardFragment myCardFragment;
     private GoogleApiClient mGoogleClient;
     private String nodeId;
+    private GridViewPager pager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        initApi();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        final Resources res = getResources();
         mProgressBar = (ProgressBar) findViewById(R.id.pb_wait_for_weather_main);
         mProgressBar.setVisibility(ProgressBar.VISIBLE);
-        initApi();
+        pager = (GridViewPager) findViewById(R.id.pager);
+        pager.setOnApplyWindowInsetsListener(new OnApplyWindowInsetsListener() {
+            @Override
+            public WindowInsets onApplyWindowInsets(View v, WindowInsets insets) {
+                // Adjust page margins:
+                //   A little extra horizontal spacing between pages looks a bit
+                //   less crowded on a round display.
+                // applied since this listener has taken them over.
+                pager.setPageMargins(100, 50);
 
-/*
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        CardFragment fragment = CardFragment.create(
-                getString(R.string.tv_temperature),
-                getString(R.string.tv_kari_description),R.drawable.gold_sun_48);
-
-        transaction.add(R.id.frame_layout, fragment);
-        transaction.commit();
-*/
-
+                // 1GridViewPager relies on insets to properly handle
+                // layout for round displays. They must be explicitly
+                pager.onApplyWindowInsets(insets);
+                return insets;
+            }
+        });
     }
+
 
     private void initApi() {
         // setup the instance of googleApiClient
@@ -103,7 +118,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         new Thread(new Runnable() {
             @Override
             public void run() {
-//                mGoogleClient.connect();
                 mGoogleClient.blockingConnect(CONNECTION_TIMEOUT_MS, TimeUnit.MILLISECONDS);
                 NodeApi.GetConnectedNodesResult result =
                         Wearable.NodeApi.getConnectedNodes(mGoogleClient).await();
@@ -127,7 +141,6 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                                     }
                             );
                 }
-                //mGoogleClient.disconnect();
             }
 
         }).start();
@@ -167,25 +180,45 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         FragmentManager manager = getFragmentManager();
         FragmentTransaction transaction = manager.beginTransaction();
         CardFragment fragment = CardFragment.create(String.valueOf(displayTemp),
-                                            displayDescription, ICON_MAP.get(iconCode));
+                displayDescription, ICON_MAP.get(iconCode));
 
         transaction.add(R.id.frame_layout, fragment);
         transaction.commit();
 
     }
-    // DataApi.DataListener - This is only called if data ACTUALLY changes
-    // so if the data isnt new  - need to show old data. Where is is stored??  URI.Builder
+    public void updateForecast(ArrayList<DataMap> weatherList){
+        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+        pager.setAdapter(new WearGridPagerAdapter(this, getFragmentManager(), fromDataMap(weatherList)));
+        DotsPageIndicator dotsPageIndicator = (DotsPageIndicator) findViewById(R.id.page_indicator);
+        dotsPageIndicator.setPager(pager);
+
+    }
+
+    private List<Weather> fromDataMap(ArrayList<DataMap> weatherList) {
+        int size = weatherList.size();
+        List<Weather> forecast = new ArrayList<Weather>(size);
+        for (int i=0; i<size; i++){
+            //iterate through array - populate Object for UI
+            DataMap dm = weatherList.get(i);
+            int temp = dm.getInt("wearTemperature");
+            String description = dm.getString("wearDescription");
+            int icon = dm.getInt("wearIcon");
+            forecast.add(new Weather(description, String.valueOf(temp), ICON_MAP.get(icon), 0));
+        }
+        return forecast;
+
+    }
+
     @Override
     public void onDataChanged(DataEventBuffer dataEventBuffer) {
         for (DataEvent event : dataEventBuffer){
             if (event.getType() == DataEvent.TYPE_CHANGED){
                 Log.d(TAG, "DataItem changed: " + event.getDataItem().getUri());
                 DataItem dataItem = event.getDataItem();
-                if (dataItem.getUri().getPath().compareTo("/WEATHER_DATA")==0){
+                if (dataItem.getUri().getPath().compareTo("/FORECAST_DATA")==0){ //UGH - hard code!
                     DataMap dataMap = DataMapItem.fromDataItem(dataItem).getDataMap();
                     //update the ui on the wearable with dataMap.getInt("key")
-                    updateTemperature(dataMap.getInt("wearTemperature"), dataMap.getString("wearDescription"),
-                                        dataMap.getInt("wearIcon"));
+                    updateForecast(dataMap.getDataMapArrayList("wearWeatherList"));
                 }
             } else if (event.getType() == DataEvent.TYPE_DELETED) {
                 // DataItem has been deleted

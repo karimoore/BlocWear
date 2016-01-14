@@ -10,6 +10,8 @@ import org.json.JSONObject;
  * Created by kari on 12/15/15.
  */
 public class WeatherData implements JSONPopulator {
+
+
     private String description;
     private String temperature;
     private int icon;
@@ -28,7 +30,17 @@ public class WeatherData implements JSONPopulator {
 
         return icon;
     }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
+    public void setTemperature(String temperature) {
+        this.temperature = temperature;
+    }
+
+    public void setIcon(int icon) {
+        this.icon = icon;
+    }
     @Override
     public void populate(JSONObject data) {
         JSONObject obj = null;
@@ -49,7 +61,7 @@ public class WeatherData implements JSONPopulator {
 
     }
 
-    private int getIntIcon(String strIcon) {
+    public int getIntIcon(String strIcon) {
         // the string will be in the form of "13d" or "13n" based on
         // openweatherAPI
         if (strIcon != null){

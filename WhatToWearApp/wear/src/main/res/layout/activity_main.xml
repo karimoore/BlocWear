@@ -8,7 +8,7 @@
     android:layout_height="match_parent"
     tools:context="com.karimoore.android.whattowearapp.MainActivity"
     tools:deviceIds="wear"
-    android:background="@color/dark_blue">
+    android:background="@color/black">
 
 
     <FrameLayout
@@ -16,6 +16,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_box="bottom">
+
+        <android.support.wearable.view.GridViewPager
+            android:id="@+id/pager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:keepScreenOn="true" />
+
+        <android.support.wearable.view.DotsPageIndicator
+            android:id="@+id/page_indicator"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom">
+        </android.support.wearable.view.DotsPageIndicator>
+
 
         <ProgressBar
             android:id="@+id/pb_wait_for_weather_main"
