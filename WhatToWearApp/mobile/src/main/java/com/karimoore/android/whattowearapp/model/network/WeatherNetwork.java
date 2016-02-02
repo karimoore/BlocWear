@@ -1,14 +1,10 @@
 package com.karimoore.android.whattowearapp.model.network;
 
-import android.app.Activity;
 import android.location.Location;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.karimoore.android.whattowearapp.R;
 import com.karimoore.android.whattowearapp.model.data.ForecastData;
-import com.karimoore.android.whattowearapp.model.data.WeatherData;
 
 import org.json.JSONObject;
 
@@ -49,6 +45,7 @@ public class WeatherNetwork {
     public void refreshWeather(final Location location) {
 
 //        new AsyncTask<Location, Void, WeatherData>() {
+        Log.d(TAG, "refresh weather with Location:  " + location.toString());
         new AsyncTask<Location, Void, ForecastData>() {
             @Override
             protected ForecastData doInBackground(Location[] locations) {
@@ -63,9 +60,10 @@ public class WeatherNetwork {
                 sBuilder.append("&"+LON+"=");
                 long roundLon = Math.round(location.getLongitude());
                 sBuilder.append(String.valueOf(roundLon));
-                sBuilder.append("&"+UNITS+"="+UNIT_TYPE);
-                sBuilder.append("&"+COUNT+"="+NUM_DAYS);
-                sBuilder.append("&"+WEATHER_API_KEY);
+                sBuilder.append("&" + UNITS + "=" + UNIT_TYPE);
+                sBuilder.append("&" + COUNT + "=" + NUM_DAYS);
+                sBuilder.append("&" + WEATHER_API_KEY);
+                Log.d(TAG, "Getting data:  " + sBuilder);
                 try {
                     URL url = new URL(sBuilder.toString());
 
@@ -87,6 +85,7 @@ public class WeatherNetwork {
 
                 } catch (Exception e) {
                     error = e;
+                    Log.d(TAG, "Failed to read data with Exception:" + e.toString());
                 }
                 return null;
             }

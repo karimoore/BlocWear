@@ -13,44 +13,8 @@
     tools:showIn="@layout/activity_main">
 
     <TextView
-        android:id="@+id/tv_latitude"
+        android:id="@+id/tv_info"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Latitude" />
-    <TextView
-        android:id="@+id/tv_longitude"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Longitude"
-        android:layout_toEndOf="@+id/tv_latitude"
-        android:layout_below="@+id/tv_latitude"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/iv_weather_image"
-        android:layout_below="@+id/tv_longitude"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="90dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Medium Text"
-        android:id="@+id/tv_temperature"
-        android:layout_below="@+id/iv_weather_image"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="64dp" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Small Text"
-        android:id="@+id/tv_condition"
-        android:layout_below="@+id/tv_temperature"
-        android:layout_centerHorizontal="true" />
+        android:text="This is the handheld app for WhattoWear watch app.  It's only functionality so far is to receive messages from watch and set a notification daily." />
 </RelativeLayout>

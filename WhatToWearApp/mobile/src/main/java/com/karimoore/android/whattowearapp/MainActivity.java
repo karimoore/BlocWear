@@ -1,51 +1,34 @@
 package com.karimoore.android.whattowearapp;
 
-import android.location.Location;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.View;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
-import com.karimoore.android.whattowearapp.model.data.WeatherData;
-import com.karimoore.android.whattowearapp.model.network.WeatherNetwork;
-import com.karimoore.android.whattowearapp.model.network.WeatherNetworkListener;
+import com.karimoore.android.whattowearapp.model.network.AlarmReceiver;
 
-import org.json.JSONObject;
+import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
 
 
     private static final String TAG = "kariPhoneMainActivity";
-    private GoogleApiClient mGoogleApiClient;
-    private WeatherNetwork mWeatherNetwork;
-    private Location mLastLocation;
-    private TextView mLatitudeText;
-    private TextView mLongitudeText;
 
-    private TextView temperature;
-    private TextView condition;
-    private ImageView weatherIcon;
-
-
-    private String mLongitude;
-    private String mLatitude;
-
-    WeatherData weatherData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setAlarm();
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -55,12 +38,23 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Snackbar.make(view, "Kari, Replace with your own action", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
-                // Go get the weather from OpenWeatherApi
-                //getWeatherFromWeb(mLongitude, mLatitude);
-
 
             }
         });
+    }
+
+
+    private void setAlarm() {
+        Context context = getApplicationContext();
+        // configure calendar for 8 AM tomorrow
+
+        Intent myIntent = new Intent(this, AlarmReceiver.class);
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, myIntent, 0);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 8);
+        alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(),
+                AlarmManager.INTERVAL_DAY, pendingIntent); //Repeat every day
     }
 
 
@@ -97,37 +91,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
 }
-
-/*
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Toast.makeText(MainActivity.this, "Connection Suspended", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        Toast.makeText(MainActivity.this, "Connection Failed", Toast.LENGTH_SHORT).show();
-    }
-
-    // WeatherNetworkListener---------------------
-    @Override
-    public void networkSuccess(WeatherData wData) {
-        weatherData = wData;  // this is current weather at start of app
-        // update the screen
-        condition.setText(wData.getDescription());
-        temperature.setText(wData.getTemperature());
-
-        // if sending a bitmap use the asset class
-        //Asset asset - createAssetFromBitmap(bitmap); 100 kByte
-    }
-
-    @Override
-    public void networkFailure(Exception e) {
-        //post error
-
-    }
-    // WeatherNetworkListener ----------------------------
-}
-*/

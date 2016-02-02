@@ -11,17 +11,21 @@
     android:background="@color/black">
 
 
+
     <FrameLayout
         android:id="@+id/frame_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="#ed22cb"
         app:layout_box="bottom">
+
 
         <android.support.wearable.view.GridViewPager
             android:id="@+id/pager"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:keepScreenOn="true" />
+            android:keepScreenOn="true"
+            android:background="#05a991" />
 
         <android.support.wearable.view.DotsPageIndicator
             android:id="@+id/page_indicator"

@@ -1,5 +1,7 @@
 package com.karimoore.android.whattowearapp.model.data;
 
+import android.util.Log;
+
 import com.google.android.gms.wearable.DataMap;
 
 import org.json.JSONArray;
@@ -14,6 +16,8 @@ import java.util.Random;
  * Created by kari on 1/12/16.
  */
 public class ForecastData implements JSONPopulator {
+    private static final String TAG = "kariForecastData";
+
     private List <WeatherData> forecast;
 
     public List<WeatherData> getForecast() {
@@ -35,7 +39,8 @@ public class ForecastData implements JSONPopulator {
         }
 
         JSONObject forecastItem = null;
-        forecast = new ArrayList<WeatherData>(count);
+        Log.d(TAG, "Forecast has " + count + " days in forecast");
+        forecast = new ArrayList<>(count);
         for (int i = 0; i < count; i++) {
             WeatherData wd = new WeatherData();
             JSONObject obj = null;
@@ -55,6 +60,9 @@ public class ForecastData implements JSONPopulator {
             int temp = temperatureObject.optInt("day");
             wd.setTemperature(String.valueOf(temp));
 
+            Log.d(TAG, "Storing- " + "Temp: " + wd.getTemperature()
+                    + " weather desc: " + wd.getDescription());
+
             forecast.add(i, wd);
         }
 
@@ -67,6 +75,7 @@ public class ForecastData implements JSONPopulator {
         for (int i=0; i<count; i++) {
             WeatherData wData = forecast.getForecast().get(i);
             DataMap dataMap = new DataMap();
+// For testing - so there shows a change in the data
             Random rand = new Random();
             int zeroToTen = rand.nextInt(11);
             dataMap.putInt("wearTemperature", Integer.parseInt(wData.getTemperature())+zeroToTen);

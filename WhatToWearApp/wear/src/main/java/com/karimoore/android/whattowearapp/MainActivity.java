@@ -1,30 +1,20 @@
 package com.karimoore.android.whattowearapp;
 
 import android.app.Activity;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Context;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.wearable.view.CardFragment;
 import android.support.wearable.view.DotsPageIndicator;
 import android.support.wearable.view.GridViewPager;
-import android.support.wearable.view.WatchViewStub;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnApplyWindowInsetsListener;
 import android.view.WindowInsets;
 import android.widget.ProgressBar;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.Api;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.wearable.DataApi;
 import com.google.android.gms.wearable.DataEvent;
 import com.google.android.gms.wearable.DataEventBuffer;
@@ -37,8 +27,6 @@ import com.google.android.gms.wearable.NodeApi;
 import com.google.android.gms.wearable.Wearable;
 import com.karimoore.android.common.Weather;
 
-import java.io.FileDescriptor;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +39,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                                                     DataApi.DataListener {
 
     private static final Map<Integer,Integer> ICON_MAP;
+
     static {
         Map<Integer,Integer> aMap = new HashMap<Integer, Integer>();
         aMap.put(1,R.drawable.gold_sun_48);
@@ -64,15 +53,96 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
         aMap.put(50,R.drawable.rain);
         ICON_MAP = Collections.unmodifiableMap(aMap);
     }
+    private static final Map<Integer,Integer> OUTFIT_COLD_MAP;
+    static {
+        Map<Integer,Integer> aMap = new HashMap<Integer, Integer>();
+        aMap.put(1,R.drawable.beanie_50);
+        aMap.put(2,R.drawable.beanie_50);
+        aMap.put(3,R.drawable.beanie_50);
+        aMap.put(4,R.drawable.beanie_50);
+        aMap.put(9,R.drawable.umbrella); //rain boot
+        aMap.put(10,R.drawable.umbrella);
+        aMap.put(11,R.drawable.umbrella);
+        aMap.put(13,R.drawable.boots);//snow boot
+        aMap.put(50,R.drawable.umbrella);
+        OUTFIT_COLD_MAP = Collections.unmodifiableMap(aMap);
+    }
+    private static final Map<Integer,String> OUTFIT_COLD_WHATTOWEAR_MAP;
+    static {
+        Map<Integer,String> aMap = new HashMap<Integer, String>();
+        aMap.put(1,"Wear a beanie.");
+        aMap.put(2,"Wear a beanie.");
+        aMap.put(3,"Wear a beanie.");
+        aMap.put(4,"Wear a beanie.");
+        aMap.put(9,"Bring an umbrealla"); //rain boot
+        aMap.put(10,"Bring an umbrella.");
+        aMap.put(11,"Bring an umbrella.");
+        aMap.put(13,"Wear snow boots.");//snow boot
+        aMap.put(50,"Bring an umbrella.");
+        OUTFIT_COLD_WHATTOWEAR_MAP = Collections.unmodifiableMap(aMap);
+    }
+    private static final Map<Integer,Integer> OUTFIT_HOT_MAP;
+    static {
+        Map<Integer,Integer> aMap = new HashMap<Integer, Integer>();
+        aMap.put(1,R.drawable.shorts);
+        aMap.put(2,R.drawable.shorts);
+        aMap.put(3,R.drawable.shorts);
+        aMap.put(4,R.drawable.shorts);
+        aMap.put(9,R.drawable.umbrella); //rain boot
+        aMap.put(10,R.drawable.umbrella);
+        aMap.put(11,R.drawable.umbrella);
+        aMap.put(13,R.drawable.boots);//snow boot
+        aMap.put(50,R.drawable.umbrella);
+        OUTFIT_HOT_MAP = Collections.unmodifiableMap(aMap);
+    }
+    private static final Map<Integer,String> OUTFIT_HOT_WHATTOWEAR_MAP;
+    static {
+        Map<Integer,String> aMap = new HashMap<Integer, String>();
+        aMap.put(1,"Wear shorts.");
+        aMap.put(2,"Wear shorts.");
+        aMap.put(3,"Wear shorts.");
+        aMap.put(4,"Wear shorts.");
+        aMap.put(9,"Bring an umbrealla"); //rain boot
+        aMap.put(10,"Bring an umbrella.");
+        aMap.put(11,"Bring an umbrella.");
+        aMap.put(13,"Wear snow boots.");//snow boot
+        aMap.put(50,"Bring an umbrella.");
+        OUTFIT_HOT_WHATTOWEAR_MAP = Collections.unmodifiableMap(aMap);
+    }
+    private static final Map<Integer,Integer> OUTFIT_MID_MAP;
+    static {
+        Map<Integer,Integer> aMap = new HashMap<Integer, Integer>();
+        aMap.put(1,R.drawable.scarf);
+        aMap.put(2,R.drawable.scarf);
+        aMap.put(3,R.drawable.scarf);
+        aMap.put(4,R.drawable.scarf);
+        aMap.put(9,R.drawable.umbrella); //rain boot
+        aMap.put(10,R.drawable.umbrella);
+        aMap.put(11,R.drawable.umbrella);
+        aMap.put(13,R.drawable.boots);//snow boot
+        aMap.put(50,R.drawable.umbrella);
+        OUTFIT_MID_MAP = Collections.unmodifiableMap(aMap);
+    }
+    private static final Map<Integer,String> OUTFIT_MID_WHATTOWEAR_MAP;
+    static {
+        Map<Integer,String> aMap = new HashMap<Integer, String>();
+        aMap.put(1,"Wear layers.");
+        aMap.put(2,"Wear layers.");
+        aMap.put(3,"Wear layers.");
+        aMap.put(4,"Wear layers.");
+        aMap.put(9,"Bring an umbrealla"); //rain boot
+        aMap.put(10,"Bring an umbrella.");
+        aMap.put(11,"Bring an umbrella.");
+        aMap.put(13,"Wear snow boots.");//snow boot
+        aMap.put(50,"Bring an umbrella.");
+        OUTFIT_MID_WHATTOWEAR_MAP = Collections.unmodifiableMap(aMap);
+    }
+
     private static final String TAG = "kariWatchMainActivity";
     private static final long CONNECTION_TIMEOUT_MS = 100;
-    private static final String MESSAGE = "Send Weather";
 
 
     private ProgressBar mProgressBar;
-    private TextView mTemperatureTextView;
-    private TextView mKariTextView;
-    private CardFragment myCardFragment;
     private GoogleApiClient mGoogleClient;
     private String nodeId;
     private GridViewPager pager;
@@ -93,7 +163,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
                 //   A little extra horizontal spacing between pages looks a bit
                 //   less crowded on a round display.
                 // applied since this listener has taken them over.
-                pager.setPageMargins(100, 50);
+                pager.setPageMargins(100, 50); //TO DO
 
                 // 1GridViewPager relies on insets to properly handle
                 // layout for round displays. They must be explicitly
@@ -160,7 +230,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     public void onConnected(Bundle bundle) {
         Toast.makeText(MainActivity.this, "Connected to google API", Toast.LENGTH_SHORT).show();
         Wearable.DataApi.addListener(mGoogleClient, this);
-        Log.d(TAG, "AddListener (this) ");
+        Log.d(TAG, "Connected to Google API: so, AddListener (this) ");
     }
 
     @Override
@@ -175,17 +245,7 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
     }
 
 
-    public void updateTemperature(int displayTemp, String displayDescription, int iconCode){
-        mProgressBar.setVisibility(ProgressBar.INVISIBLE);
-        FragmentManager manager = getFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        CardFragment fragment = CardFragment.create(String.valueOf(displayTemp),
-                displayDescription, ICON_MAP.get(iconCode));
 
-        transaction.add(R.id.frame_layout, fragment);
-        transaction.commit();
-
-    }
     public void updateForecast(ArrayList<DataMap> weatherList){
         mProgressBar.setVisibility(ProgressBar.INVISIBLE);
         pager.setAdapter(new WearGridPagerAdapter(this, getFragmentManager(), fromDataMap(weatherList)));
@@ -202,10 +262,34 @@ public class MainActivity extends Activity implements GoogleApiClient.Connection
             DataMap dm = weatherList.get(i);
             int temp = dm.getInt("wearTemperature");
             String description = dm.getString("wearDescription");
-            int icon = dm.getInt("wearIcon");
-            forecast.add(new Weather(description, String.valueOf(temp), ICON_MAP.get(icon), 0));
+            int icon = dm.getInt("wearIcon");  //icon is the # that Openweather API maps to condition
+            int drawableID = getClothingIcon(temp, icon);
+            String wearString = getWhatToWearString(temp, icon);
+
+            forecast.add(new Weather(description, String.valueOf(temp), ICON_MAP.get(icon),
+                    wearString, drawableID));
         }
         return forecast;
+
+    }
+    private String getWhatToWearString(int temperature, int iconNumber) {
+        if (temperature > 70) {
+            return OUTFIT_HOT_WHATTOWEAR_MAP.get(iconNumber);
+        } else if (temperature < 40) {
+            return OUTFIT_COLD_WHATTOWEAR_MAP.get(iconNumber);
+        } else {
+            return OUTFIT_MID_WHATTOWEAR_MAP.get(iconNumber);
+        }
+    }
+
+    private int getClothingIcon(Integer temperature, int iconNumber) {
+        if (temperature > 70) {
+            return OUTFIT_HOT_MAP.get(iconNumber);
+        } else if (temperature < 40) {
+            return OUTFIT_COLD_MAP.get(iconNumber);
+        } else {
+            return OUTFIT_MID_MAP.get(iconNumber);
+        }
 
     }
 
