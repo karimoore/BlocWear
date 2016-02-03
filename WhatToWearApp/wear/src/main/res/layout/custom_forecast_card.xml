@@ -1,0 +1,75 @@
+<android.support.wearable.view.BoxInsetLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eff715">
+
+
+        <android.support.wearable.view.CardFrame
+            android:id="@+id/cf_whattowear"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#bafab1">
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:background="#fce4b0">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:id="@+id/date" />
+                <TextView
+                    android:id="@+id/tv_card_temp"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="Temperature"
+                    android:textColor="@color/black"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:layout_marginLeft="0dp"
+                    android:layout_below="@+id/date"
+                    android:layout_alignParentStart="true"/>
+                    <!--android:layout_toStartOf="@+id/iv_card_apparel" />-->
+
+                <TextView
+                    android:id="@+id/tv_card_condition"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="Condition"
+                    android:textColor="@color/black"
+                    android:layout_marginLeft="0dp"
+                    android:layout_below="@+id/tv_card_temp"
+                    android:layout_alignParentStart="true" />
+                <ImageView
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:id="@+id/iv_weather_image"
+                    android:layout_alignParentRight="true"/>
+                <TextView
+                    android:id="@+id/tv_card_clothes"
+                    style="@style/TextAppearance.AppCompat.Large"
+                    android:gravity="top"
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:text="wear shorts"
+                    android:textColor="@color/grey"
+                    android:layout_marginLeft="0dp"
+                    android:layout_below="@+id/tv_card_condition"
+                    android:layout_alignParentStart="true" />
+
+                <ImageView
+                    android:id="@+id/iv_card_apparel"
+                    android:background="@android:color/transparent"
+                    android:layout_height="50dp"
+                    android:layout_width="50dp"
+                    android:layout_marginLeft="0dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_below="@+id/tv_card_clothes" />
+
+
+            </RelativeLayout>
+
+      </android.support.wearable.view.CardFrame>
+</android.support.wearable.view.BoxInsetLayout>
